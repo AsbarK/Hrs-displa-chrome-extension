@@ -19,7 +19,7 @@ const calculateTimeLeftInYear = (): TimeLeft => {
 
 const CountdownTracker: React.FC<{ label: string; value: number }> = ({ label, value }) => {
   const trackerRef = useRef<HTMLDivElement>(null);
-  const currentValueRef = useRef<string>(("0" + value).slice(-2)); // Store the current value
+  const currentValueRef = useRef<string>((value.toString())); // Store the current value
   useEffect(() => {
     const el = trackerRef.current;
     if (!el) return;
@@ -32,7 +32,7 @@ const CountdownTracker: React.FC<{ label: string; value: number }> = ({ label, v
     if (!top || !bottom || !back || !backBottom) return;
   
     // const formattedValue = ("0" + value).slice(-2); // Format value as 2 digits
-    const formattedValue = value.toString() // Format value as 2 digits
+    const formattedValue = value.toString()
   
     // Update DOM with the initial value
     if (currentValueRef.current === formattedValue) {
