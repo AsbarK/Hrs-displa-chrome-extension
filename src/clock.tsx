@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { CircularProgressbar,buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 interface TimeLeft {
   Hours: number;
   Minutes: number;
   Seconds: number;
+  yearProgress: number;
 }
 
 const calculateTimeLeftInYear = (): TimeLeft => {
@@ -14,7 +17,9 @@ const calculateTimeLeftInYear = (): TimeLeft => {
   const hoursLeft = Math.floor((diffInMillis / (1000 * 60 * 60)) % 24) + daysLeft*24;
   const minutesLeft = Math.floor((diffInMillis / 1000 / 60) % 60);
   const secondsLeft = Math.floor((diffInMillis/ 1000) % 60);
-  return { Hours: hoursLeft, Minutes: minutesLeft, Seconds: secondsLeft };
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const yearProgress = ((now.getTime() - startOfYear.getTime()) / (endOfYear.getTime() - startOfYear.getTime())) * 100;
+  return { Hours: hoursLeft, Minutes: minutesLeft, Seconds: secondsLeft, yearProgress: yearProgress };
 };
 
 const CountdownTracker: React.FC<{ label: string; value: number }> = ({ label, value }) => {
@@ -76,6 +81,7 @@ const CountdownTracker: React.FC<{ label: string; value: number }> = ({ label, v
 
 const TimeLeftFlipClock: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeftInYear());
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeftInYear());
@@ -85,10 +91,25 @@ const TimeLeftFlipClock: React.FC = () => {
   }, []);
 
   return (
-    <div className="flip-clock">
-      <CountdownTracker label="Hours" value={timeLeft.Hours} />
-      <CountdownTracker label="Minutes" value={timeLeft.Minutes} />
-      <CountdownTracker label="Seconds" value={timeLeft.Seconds} />
+    <div className="flip-clock-progress">
+      <div className="flip-clock">
+        <CountdownTracker label="Hours" value={timeLeft.Hours} />
+        <CountdownTracker label="Minutes" value={timeLeft.Minutes} />
+        <CountdownTracker label="Seconds" value={timeLeft.Seconds} />
+      </div>
+      <div className="progress-container">
+        <CircularProgressbar
+          value={timeLeft.yearProgress}
+          text={`${timeLeft.yearProgress.toFixed(1)}%`}
+          styles={buildStyles({
+            textColor: "#000",
+            pathColor: "#4CAF50",
+            trailColor: "#333",
+            textSize: "16px",
+            strokeLinecap: "round",
+          })}
+        />
+      </div>
     </div>
   );
 };

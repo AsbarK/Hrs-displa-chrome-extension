@@ -9,6 +9,17 @@ body {
   align-items: center;
   background: #EEE;
 }
+.flip-clock-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-container {
+  width: 25%;
+  height: 25%;
+  padding: 5%;
+}
 
 .flip-clock {
   text-align: center;
